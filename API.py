@@ -7,6 +7,7 @@ from TTS import text_to_speech
 class Question(BaseModel):
     question: str
 
+
 app = FastAPI()
 
 @app.get("/")
@@ -19,12 +20,12 @@ def convert_speech_text(filepath: str):
     return speech_to_text(filepath)
 
 @app.post("/get_answer/")
-def get_answer(question:Question):
+def get_answer(question: Question):
     assistant = Assistant()
     return assistant.askQuestion(question.question)
 
 @app.post("/tts/")
-def get_speech(question:Question):
+def get_speech(question: Question):
     text_to_speech(question.question)
 
 
