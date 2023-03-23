@@ -1,3 +1,4 @@
+import os
 from typing import List
 from pydantic import BaseModel
 from fastapi import FastAPI
@@ -21,10 +22,9 @@ app = FastAPI()
 
 @app.get("/")
 def read_root():
-    message_1 = get_greetings()
-    print(message_1)
-    return message_1
-    # return {"Hello": "World"}
+    answer = get_greetings()
+    video = STV.speech_to_video(script=answer)
+    return {"answer": answer, "video": video}
 
 
 @app.post("/process_input")
