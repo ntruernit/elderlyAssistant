@@ -19,7 +19,7 @@ def read_root():
 
 @app.post("/stt/")
 def convert_speech_text(filepath: str):
-    return STT.speech_to_text()
+    return STT.speech_to_text(filepath)
 
 
 @app.post("/get_answer/")
