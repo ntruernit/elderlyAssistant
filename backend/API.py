@@ -2,8 +2,8 @@ import os
 from typing import List
 from pydantic import BaseModel
 from fastapi import FastAPI
-from dotenv import load_dotenv
-load_dotenv()
+# from dotenv import load_dotenv
+# load_dotenv()
 
 from services.utils.greetings import get_greetings
 from services import STV, OpenAi
