@@ -1,10 +1,14 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
+from services.STT import speech_to_text
+from services.OpenAi import Assistant
+from services.TTS import speech_to_video
 
 from services import STT, TTS, OpenAi, Sentiment
 
 class Question(BaseModel):
     question: str
+
 
 app = FastAPI()
 
@@ -25,6 +29,7 @@ def get_answer(question:Question):
 @app.post("/tts/")
 def get_speech(question:Question):
     TTS.text_to_speech(question.question)
+
 
 
 
