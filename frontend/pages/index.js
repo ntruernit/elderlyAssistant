@@ -10,27 +10,73 @@ import Head from "next/head";
 
 export default function Home() {
   const { transcript, resetTranscript } = useSpeechRecognition();
-  const [history, setHistory] = useState([]);
+  const [currentVideo, setCurrentVideo] = useState("base.mp4");
+  const [history, setHistory] = useState([
+    {
+      role: "system",
+      content:
+        "Du bist der nette Assistent einer älteren Person und du heißt Anna.",
+    },
+  ]);
   const [listening, setListening] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const pause = 2000;
 
   useEffect(() => {
-    if (transcript !== "") {
-      let timeoutId = setTimeout(() => {
-        setHistory((history) => [
+    if (transcript !== "" && isMounted) {
+      let timeoutId = setTimeout(async () => {
+        await setHistory((history) => [
           ...history,
-          { role: "user", content: transcript },
+          {
+            role: "user",
+            content: transcript,
+          },
         ]);
-        resetTranscript();
         console.log(history);
+        // Make a POST request to your backend endpoint here
+        fetch("http://localhost:8000/process_input", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            history: [...history, { role: "user", content: transcript }],
+          }),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Failed to send transcript to backend.");
+            }
+            return response.json();
+          })
+          .then((data) => {
+            setHistory((history) => [
+              ...history,
+              {
+                role: "assistant",
+                content: data.answer,
+              },
+            ]);
+            console.log(data.video.videoUrl);
+            setCurrentVideo(data.video.videoUrl);
+            console.log(currentVideo);
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+        resetTranscript();
       }, pause);
 
       return () => {
         clearTimeout(timeoutId);
       };
     }
-  }, [transcript]);
+  }, [transcript, history, isMounted, currentVideo]);
 
   function startListening() {
     SpeechRecognition.startListening({ continuous: true, language: "de-DE" });
@@ -50,6 +96,12 @@ export default function Home() {
     }
   }
 
+  function handleVideoEnd() {
+    const video = document.getElementById("video-player");
+    video.currentTime = 0;
+    video.pause();
+  }
+
   return (
     <>
       <Head>
@@ -62,16 +114,17 @@ export default function Home() {
         <Card>
           <Card.Body>
             <video
-              loop
-              controls={false}
+              id="video-player"
+              controls={true}
               autoPlay={true}
               muted={true}
-              style={{ width: "70%", height: "auto" }}
+              style={{ width: "100%", height: "auto" }}
+              controlsList="mute"
             >
-              <source src="base.webm" type="video/webm" />
+              <source src={currentVideo} type="video/mp4" />
             </video>
             <h2>Hey Anna</h2>
-            {history.map((item) => (
+            {history.slice(1).map((item) => (
               <Text blockquote>{item.content}</Text>
             ))}
           </Card.Body>
@@ -87,7 +140,12 @@ export default function Home() {
               >
                 Reset
               </Button>
-              <Button size="sm" onPress={() => {buttonClick()}}>
+              <Button
+                size="sm"
+                onPress={() => {
+                  buttonClick();
+                }}
+              >
                 {listening ? "Stop" : "Start"}
               </Button>
             </Row>
