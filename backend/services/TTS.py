@@ -1,8 +1,14 @@
 # from datasets import load_dataset
 # import torch
 # import soundfile as sf
+import os
 import requests
-from backend.utils_.config_util import yaml_to_json
+import sys
+
+sys.path.append("..")
+from utils_.config_util import yaml_to_json
+
+
 # from config import DEFAULT_AVATAR, DEFAULT_VOICE
 
 
@@ -23,7 +29,9 @@ from backend.utils_.config_util import yaml_to_json
 
 
 def speech_to_video(script):
-    configs = yaml_to_json('config.yaml')
+
+    # print(sys.path.append(os.path.join(os.path.dirname(__file__), '..', "utils")))
+    configs = yaml_to_json('../data/config.yaml')
     url = "https://fast-video-api-vktictsuea-nw.a.run.app/api/v1/videos"
     payload = {"videoFormat": "mp4", "script": script,
                "voiceId": configs['DEFAULT_VOICE'], "avatarId": configs['DEFAULT_AVATAR']}
@@ -38,4 +46,4 @@ def speech_to_video(script):
 
 
 if __name__ == "__main__":
-    speech_to_video()
+    speech_to_video("Hello")
