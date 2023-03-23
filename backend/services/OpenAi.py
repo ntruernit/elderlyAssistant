@@ -1,9 +1,13 @@
-import openai, os, pickle
+import openai
+import os
+import pickle
 openai.api_key = "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"
+
 
 class Assistant():
     def __init__(self):
-        self.history = pickle.load(open( "../data/conversation.p", "rb" ))
+        self.history = [{'role': 'system',
+                         'content': 'Du bist der nette Assistent einer älteren Person.'}]
 
     def askQuestion(self, question):
         self.history.append({
@@ -20,17 +24,11 @@ class Assistant():
         })
         print(ai.choices[0].message.content)
         return ai.choices[0].message.content
-    
+
     def printConversation(self):
         for row in self.history[1:]:
-            print(row["role"],":",row["content"])
+            print(row["role"], ":", row["content"])
 
-    def saveConversation(self):
-        pickle.dump(
-            self.history,
-            open( "../data/conversation.p", "wb" )
-        )
-    
     def loop(self):
         print("type exit to leave or")
         question = ""
@@ -39,9 +37,9 @@ class Assistant():
             self.askQuestion(question)
             os.system('clear')
             self.printConversation()
-        
 
-if __name__ =="__main__":
+
+if __name__ == "__main__":
     a = Assistant()
     # a.askQuestion("Where is India?")
     a.loop()

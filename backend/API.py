@@ -12,7 +12,6 @@ app = FastAPI()
 def read_root():
     return {"Hello": "World"}
 
-
 @app.post("/stt/")
 def convert_speech_text():#filepath: str):
     return STT.speech_to_text()
