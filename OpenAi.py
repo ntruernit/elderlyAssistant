@@ -18,6 +18,8 @@ class Assistant():
             "role": "assistant",
             "content": ai.choices[0].message.content
         })
+        print(ai.choices[0].message.content)
+        return ai.choices[0].message.content
     
     def printConversation(self):
         for row in self.history[1:]:
@@ -41,4 +43,5 @@ class Assistant():
 
 if __name__ =="__main__":
     a = Assistant()
+    # a.askQuestion("Where is India?")
     a.loop()
