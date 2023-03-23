@@ -1,9 +1,9 @@
 from transformers import pipeline
 
-def speech_to_text(filepath:str):
+def speech_to_text(filepath:str = None):
     cls = pipeline("automatic-speech-recognition")
 
-    res = cls("/Users/prasun/Downloads/Hackathons/StartHack-23/elderlyAssistant/harvard.wav")
+    res = cls("../data/harvard.wav")
 
-    # print(res)
+    print(res)
     return res

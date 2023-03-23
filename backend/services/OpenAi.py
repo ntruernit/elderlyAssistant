@@ -7,6 +7,7 @@ class Assistant():
     def __init__(self):
         self.history = pickle.load(open("../data/conversation.p", "rb"))
 
+
     def askQuestion(self, question):
         self.history.append({
             "role": "user",
