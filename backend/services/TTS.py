@@ -1,9 +1,8 @@
-from transformers import SpeechT5Processor, SpeechT5ForTextToSpeech, SpeechT5HifiGan
-from datasets import load_dataset
-import torch
-import soundfile as sf
+# from datasets import load_dataset
+# import torch
+# import soundfile as sf
 import requests
-from ..utils.config_util import yaml_to_json
+from backend.utils_.config_util import yaml_to_json
 # from config import DEFAULT_AVATAR, DEFAULT_VOICE
 
 
