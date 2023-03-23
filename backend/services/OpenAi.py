@@ -11,6 +11,7 @@ def ask_ai(request):
     answer = ai.choices[0].message.content
     return answer
 
+
 if __name__ == "__main__":
     ask_ai({
         "history": [

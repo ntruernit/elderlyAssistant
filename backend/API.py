@@ -1,9 +1,11 @@
+import os
 from typing import List
 from pydantic import BaseModel
 from fastapi import FastAPI
 from dotenv import load_dotenv
 load_dotenv()
 
+from services.utils.greetings import get_greetings
 from services import STV, OpenAi
 
 class HistoryItem(BaseModel):
@@ -20,7 +22,9 @@ app = FastAPI()
 
 @app.get("/")
 def read_root():
-    return {"Hello": "World"}
+    answer = get_greetings()
+    video = STV.speech_to_video(script=answer)
+    return {"answer": answer, "video": video}
 
 
 @app.post("/process_input")
