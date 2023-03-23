@@ -3,7 +3,7 @@ from datasets import load_dataset
 import torch
 import soundfile as sf
 import requests
-from utils import yaml_to_json
+from ..utils.config_util import yaml_to_json
 # from config import DEFAULT_AVATAR, DEFAULT_VOICE
 
 
@@ -33,7 +33,6 @@ def speech_to_video(script):
         "content-type": "application/json",
         "X-API-Key": "509cf5af-1e3f-4a81-8589-6f36e0e1eb57"
     }
-
     response = requests.post(url, json=payload, headers=headers)
 
     print(response.text)

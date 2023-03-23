@@ -5,7 +5,7 @@ openai.api_key = "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"
 
 class Assistant():
     def __init__(self):
-        self.history = pickle.load(open( "../data/conversation.p", "rb" ))
+        self.history = pickle.load(open("../data/conversation.p", "rb"))
 
     def askQuestion(self, question):
         self.history.append({
