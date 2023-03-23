@@ -1,5 +1,5 @@
 import openai, os, pickle
-from TTS import speech_to_video
+from .TTS import speech_to_video
 openai.api_key = "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"
 
 
