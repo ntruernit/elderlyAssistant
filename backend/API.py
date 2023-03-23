@@ -1,12 +1,19 @@
-from fastapi import FastAPI
+from typing import List
 from pydantic import BaseModel
+from fastapi import FastAPI
+from dotenv import load_dotenv
+load_dotenv()
 
-from services import STT, TTS, OpenAi
 from services.utils.greetings import get_greetings
+from services import STV, OpenAi
+
+class HistoryItem(BaseModel):
+    role: str
+    content: str
 
 
-class Question(BaseModel):
-    question: str
+class HistoryRequest(BaseModel):
+    history: List[HistoryItem]
 
 
 app = FastAPI()
@@ -20,23 +27,8 @@ def read_root():
     # return {"Hello": "World"}
 
 
-@app.post("/stt/")
-def convert_speech_text(filepath: str):
-    return STT.speech_to_text()
-
-
-@app.post("/get_answer/")
-def get_answer(question:Question):
-    assistant = OpenAi.Assistant()
-    return assistant.askQuestion(question.question)
-
-@app.post("/tts/")
-def get_speech(question:Question):
-    TTS.text_to_speech(question.question)
-
-
-
-
-
-
-
+@app.post("/process_input")
+def get_answer(history: HistoryRequest):
+    answer = OpenAi.ask_ai(history.dict())
+    video = STV.speech_to_video(script=answer)
+    return {"answer": answer, "video": video}
