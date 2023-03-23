@@ -1,8 +1,7 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
-from STT import speech_to_text
-from OpenAi import Assistant
-from TTS import text_to_speech
+
+from services import STT, TTS, OpenAi, Sentiment
 
 class Question(BaseModel):
     question: str
@@ -14,18 +13,18 @@ def read_root():
     return {"Hello": "World"}
 
 
-@app.get("/stt/")
-def convert_speech_text(filepath: str):
-    return speech_to_text(filepath)
+@app.post("/stt/")
+def convert_speech_text():#filepath: str):
+    return STT.speech_to_text()
 
 @app.post("/get_answer/")
 def get_answer(question:Question):
-    assistant = Assistant()
+    assistant = OpenAi.Assistant()
     return assistant.askQuestion(question.question)
 
 @app.post("/tts/")
 def get_speech(question:Question):
-    text_to_speech(question.question)
+    TTS.text_to_speech(question.question)
 
 
 

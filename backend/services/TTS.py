@@ -16,4 +16,4 @@ def text_to_speech(text_to_convert:str):
 
     speech = model.generate_speech(inputs["input_ids"], speaker_embeddings, vocoder=vocoder)
 
-    sf.write("speech.wav", speech.numpy(), samplerate=16000)
+    sf.write("../data/speech.wav", speech.numpy(), samplerate=16000)
