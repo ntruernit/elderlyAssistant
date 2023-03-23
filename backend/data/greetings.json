@@ -1,0 +1,27 @@
+{
+  "1": {
+    "start": "05:00:00",
+    "end": "9:00:00",
+    "greetings": ["Good morning, how are you feeling?", "wasupppp"]
+  },
+  "2": {
+    "start": "9:00:01",
+    "end": "11:59:59",
+    "greetings": []
+  },
+  "3": {
+    "start": "12:00:00",
+    "end": "15:00:00",
+    "greetings": []
+  },
+  "4": {
+    "start": "15:00:01",
+    "end": "18:30:00",
+    "greetings": []
+  },
+  "5": {
+    "start": "18:30:01",
+    "end": "10:00:00",
+    "greetings": []
+  }
+}

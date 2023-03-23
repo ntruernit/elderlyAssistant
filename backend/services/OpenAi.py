@@ -1,6 +1,5 @@
-import openai
-import os
-import pickle
+import openai, os, pickle
+from .TTS import speech_to_video
 openai.api_key = "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"
 
 
@@ -23,6 +22,7 @@ class Assistant():
             "content": ai.choices[0].message.content
         })
         print(ai.choices[0].message.content)
+        speech_to_video(script=ai.choices[0].message.content)
         return ai.choices[0].message.content
 
     def printConversation(self):
@@ -41,5 +41,5 @@ class Assistant():
 
 if __name__ == "__main__":
     a = Assistant()
-    # a.askQuestion("Where is India?")
+    # print(a.askQuestion("Where is India?"))
     a.loop()
