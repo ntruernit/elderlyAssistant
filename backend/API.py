@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 
 from services import STT, TTS, OpenAi
-from backend.utils_.greetings import get_greetings
+from services.utils.greetings import get_greetings
 
 
 class Question(BaseModel):
@@ -11,9 +11,12 @@ class Question(BaseModel):
 
 app = FastAPI()
 
+
 @app.get("/")
 def read_root():
-    return get_greetings()
+    message_1 = get_greetings()
+    print(message_1)
+    return message_1
     # return {"Hello": "World"}
 
 
@@ -26,7 +29,6 @@ def convert_speech_text(filepath: str):
 def get_answer(question:Question):
     assistant = OpenAi.Assistant()
     return assistant.askQuestion(question.question)
-
 
 @app.post("/tts/")
 def get_speech(question:Question):
