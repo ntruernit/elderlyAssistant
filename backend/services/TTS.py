@@ -26,7 +26,6 @@ from utils import yaml_to_json
 def speech_to_video(script):
     configs = yaml_to_json('config.yaml')
     url = "https://fast-video-api-vktictsuea-nw.a.run.app/api/v1/videos"
-
     payload = {"videoFormat": "mp4", "script": script,
                "voiceId": configs['DEFAULT_VOICE'], "avatarId": configs['DEFAULT_AVATAR']}
     headers = {
