@@ -14,9 +14,6 @@ def load_json():
     current_path = os.path.dirname(os.path.abspath(__file__))
     with open(os.path.dirname(os.path.abspath("API.py")) + "/data/greetings.json") as user_file:
         greetings = user_file.read()
-
-    print(greetings)
-
     parsed_json = json.loads(greetings)
     return parsed_json
 

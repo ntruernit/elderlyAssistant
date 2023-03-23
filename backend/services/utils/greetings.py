@@ -14,6 +14,5 @@ def get_greetings():
         start_time = datetime.datetime.strptime(times["start"], '%H:%M:%S').time()
         end_time = datetime.datetime.strptime(times["end"], '%H:%M:%S').time()
         if start_time < time_ < end_time:
-            print('entered here at least')
-            print(random.choice(times["greetings"]))
+            print(str(random.choice(times["greetings"])))
             return str(random.choice(times["greetings"]))
