@@ -1,6 +1,9 @@
 import openai
 import os
-openai.api_key = os.environ["OPENAI"]
+from .utils.config_util import yaml_to_json
+
+configs = yaml_to_json(os.path.dirname(os.path.abspath("API.py")) + "/data/config.yaml")
+openai.api_key = configs["OPEN_AI"]
 
 
 def ask_ai(request):
@@ -10,6 +13,7 @@ def ask_ai(request):
     )
     answer = ai.choices[0].message.content
     return answer
+
 
 if __name__ == "__main__":
     ask_ai({
