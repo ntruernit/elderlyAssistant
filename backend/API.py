@@ -1,10 +1,10 @@
+import os
 from typing import List
 from pydantic import BaseModel
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from dotenv import load_dotenv
-load_dotenv()
 
+from services.utils.greetings import get_greetings
 from services import STV, OpenAi
 
 class HistoryItem(BaseModel):
@@ -30,7 +30,9 @@ app.add_middleware(
 
 @app.get("/")
 def read_root():
-    return {"status": "running :)"}
+    answer = get_greetings()
+    video = STV.speech_to_video(script=answer)
+    return {"answer": answer, "video": video}
 
 
 @app.post("/process_input")

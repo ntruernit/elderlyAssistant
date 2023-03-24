@@ -1,27 +1,37 @@
 {
   "1": {
-    "start": "05:00:00",
-    "end": "9:00:00",
-    "greetings": ["Good morning, how are you feeling?", "wasupppp"]
+    "start": "00:00:00",
+    "end": "4:59:59",
+    "greetings": ["Hallo, ich bin sehr überrascht, dass du noch wach bist.", "Hast du Probleme zu schlafen?"]
   },
   "2": {
-    "start": "9:00:01",
-    "end": "11:59:59",
-    "greetings": []
+    "start": "05:00:00",
+    "end": "09:00:00",
+    "greetings": ["Guten Morgen, wie geht es dir?", "Guten Morgen, hast du gut geschlafen?", "Guten Morgen, wie geht es dir heute?"]
   },
   "3": {
-    "start": "12:00:00",
-    "end": "15:00:00",
-    "greetings": []
+    "start": "9:00:01",
+    "end": "11:59:59",
+    "greetings": ["Hi! Hast du heute etwas schönes vor?", "Hallo! Wie sieht dein Tag heute aus?"]
   },
   "4": {
-    "start": "15:00:01",
-    "end": "18:30:00",
-    "greetings": []
+    "start": "12:00:00",
+    "end": "15:00:00",
+    "greetings": ["Es ist Mittagszeit, hast du schon zu Mittag gegessen?", "Hallo; wie ist das Wetter heute bei dir?"]
   },
   "5": {
+    "start": "15:00:01",
+    "end": "18:30:00",
+    "greetings": ["Hi! Hast du heute etwas auf dem Herzen?", "Guten Tag! Wie geht es dir gerade?"]
+  },
+  "6": {
     "start": "18:30:01",
-    "end": "10:00:00",
-    "greetings": []
+    "end": "22:00:00",
+    "greetings": ["Guten Abend, hattest du einen schönen Tag?", "Guten Abend, wie war dein Tag?"]
+  },
+  "7": {
+    "start": "22:00:01",
+    "end": "23:59:59",
+    "greetings": ["Hallo, ich bin sehr überrascht, dass du noch wach bist.", "Hast du Probleme zu schlafen?"]
   }
 }
