@@ -35,7 +35,7 @@ export default function Home() {
   useEffect(() => {
     if (transcript !== "" && isMounted) {
       let timeoutId = setTimeout(async () => {
-        stopListening()
+        stopListening();
         await setHistory((history) => [
           ...history,
           {
@@ -81,36 +81,28 @@ export default function Home() {
 
       return () => {
         clearTimeout(timeoutId);
-        startListening()
+        startListening();
       };
     }
   }, [transcript, history, isMounted]);
 
   useEffect(() => {
+    stopListening();
     if (currentVideo) {
       setHasEnded(false); // reset hasEnded when video changes
       const timeoutId = setTimeout(() => {
         videoRef.current.src = currentVideo;
         videoRef.current.load();
         videoRef.current.play();
+        stopListening();
         setIsVideoPlaying(true); // set isVideoPlaying to true when video starts playing
-      }, 3000);
+      }, 4000);
       return () => {
         clearTimeout(timeoutId);
         setIsVideoPlaying(false); // set isVideoPlaying to false when video stops playing
-        startListening()
       };
     }
   }, [currentVideo]);
-
-  useEffect(() => {
-    if (!isVideoPlaying && !initial) {
-      console.log(isVideoPlaying);
-      startListening();
-    } else {
-      stopListening();
-    }
-  }, [isVideoPlaying, initial]);
 
   useEffect(() => {
     if (hasEnded) {
@@ -133,7 +125,7 @@ export default function Home() {
     if (initial) {
       setInitial(false);
       videoRef.current.play();
-      return
+      return;
     }
     if (listening) {
       stopListening();
