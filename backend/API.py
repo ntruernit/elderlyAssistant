@@ -4,11 +4,12 @@ from pydantic import BaseModel
 from fastapi import FastAPI
 # from dotenv import load_dotenv
 # load_dotenv()
+import yaml
 
 from services.utils.greetings import get_greetings
-from services.utils.change_settings import display_settings, detect_request_type
+# from services.utils.change_settings import display_settings, detect_request_type
 from services import STV, OpenAi
-from services.utils.config_util import yaml_to_json
+from services.utils.config_util import yaml_to_json, load_json
 
 class HistoryItem(BaseModel):
     role: str
@@ -31,15 +32,24 @@ def read_root():
 
 @app.post("/process_input")
 def get_answer(history: HistoryRequest):
+    speech = str(history.dict()["history"][-1]["content"]).lower()
+    print(speech)
     configs = yaml_to_json(os.path.dirname(os.path.abspath("API.py")) + "/data/config.yaml")
-    if detect_request_type(history.dict()) == 2:
-        if configs["REQUEST_TYPE"] == 2:
-            answer = "Okay, I will show you a set of avatars, please select your favourite"
-            video = STV.speech_to_video(script=answer)
-        for num, item in enumerate(display_settings()):
-            video = STV.speech_to_video(script="Das is Stimmhaftigkeit " + str(num))
-            yield {"video": video}
-    else:
+    print(configs)
+    try:
+        if ("switch" in speech) or ("talk to" in speech):
+            characters = load_json(os.path.abspath("API.py") + "/data/options.json")
+            for person, ids in characters.items():
+                if person in speech:
+                    print(person)
+                    configs["DEFAULT_VOICE"] = ids["voice"]
+                    configs["DEFAULT_AVATAR"] = ids["avatar"]
+                    with open(os.path.dirname(os.path.abspath("API.py")) + "/data/config.yaml", "w") as f:
+                        yaml.dump(configs, f)
+                    answer = "Hallo, ich bin " + person
+                    video = STV.speech_to_video(script=answer)
+                    return {"answer": answer, "video": video}
+    except Exception as e:
         answer = OpenAi.ask_ai(history.dict())
         video = STV.speech_to_video(script=answer)
         return {"answer": answer, "video": video}

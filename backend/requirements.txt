@@ -64,3 +64,4 @@ webrtcvad==2.0.10
 Werkzeug==2.0.3
 xxhash==3.2.0
 yarl==1.8.2
+pyyaml==3.11
