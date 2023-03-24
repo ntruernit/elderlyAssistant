@@ -1,5 +1,5 @@
 import "regenerator-runtime/runtime";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
@@ -11,6 +11,9 @@ import Head from "next/head";
 export default function Home() {
   const { transcript, resetTranscript } = useSpeechRecognition();
   const [currentVideo, setCurrentVideo] = useState("base.mp4");
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+  const [initial, setInitial] = useState(true);
+  const videoRef = useRef(null);
   const [history, setHistory] = useState([
     {
       role: "system",
@@ -20,6 +23,7 @@ export default function Home() {
   ]);
   const [listening, setListening] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const [hasEnded, setHasEnded] = useState(false);
 
   useEffect(() => {
     setIsMounted(true);
@@ -27,9 +31,11 @@ export default function Home() {
 
   const pause = 2000;
 
+  // CALL the API
   useEffect(() => {
     if (transcript !== "" && isMounted) {
       let timeoutId = setTimeout(async () => {
+        stopListening()
         await setHistory((history) => [
           ...history,
           {
@@ -54,7 +60,7 @@ export default function Home() {
             }
             return response.json();
           })
-          .then((data) => {
+          .then(async (data) => {
             setHistory((history) => [
               ...history,
               {
@@ -62,9 +68,10 @@ export default function Home() {
                 content: data.answer,
               },
             ]);
-            console.log(data.video.videoUrl);
-            setCurrentVideo(data.video.videoUrl);
+
+            await setCurrentVideo(data.video.videoUrl);
             console.log(currentVideo);
+            videoRef.current.play();
           })
           .catch((error) => {
             console.error(error);
@@ -74,9 +81,43 @@ export default function Home() {
 
       return () => {
         clearTimeout(timeoutId);
+        startListening()
       };
     }
-  }, [transcript, history, isMounted, currentVideo]);
+  }, [transcript, history, isMounted]);
+
+  useEffect(() => {
+    if (currentVideo) {
+      setHasEnded(false); // reset hasEnded when video changes
+      const timeoutId = setTimeout(() => {
+        videoRef.current.src = currentVideo;
+        videoRef.current.load();
+        videoRef.current.play();
+        setIsVideoPlaying(true); // set isVideoPlaying to true when video starts playing
+      }, 3000);
+      return () => {
+        clearTimeout(timeoutId);
+        setIsVideoPlaying(false); // set isVideoPlaying to false when video stops playing
+        startListening()
+      };
+    }
+  }, [currentVideo]);
+
+  useEffect(() => {
+    if (!isVideoPlaying && !initial) {
+      console.log(isVideoPlaying);
+      startListening();
+    } else {
+      stopListening();
+    }
+  }, [isVideoPlaying, initial]);
+
+  useEffect(() => {
+    if (hasEnded) {
+      console.log("heya");
+      startListening();
+    }
+  }, [hasEnded]);
 
   function startListening() {
     SpeechRecognition.startListening({ continuous: true, language: "de-DE" });
@@ -89,19 +130,15 @@ export default function Home() {
   }
 
   function buttonClick() {
+    if (initial) {
+      setInitial(false);
+      videoRef.current.play();
+      return
+    }
     if (listening) {
       stopListening();
-    } else {
-      startListening();
     }
   }
-
-  function handleVideoEnd() {
-    const video = document.getElementById("video-player");
-    video.currentTime = 0;
-    video.pause();
-  }
-
   return (
     <>
       <Head>
@@ -114,19 +151,24 @@ export default function Home() {
         <Card>
           <Card.Body>
             <video
-              id="video-player"
+              ref={videoRef}
               controls={true}
-              autoPlay={true}
-              muted={true}
               style={{ width: "100%", height: "auto" }}
-              controlsList="mute"
+              muted={false}
+              onEnded={() => {
+                setHasEnded(true);
+              }}
             >
               <source src={currentVideo} type="video/mp4" />
             </video>
             <h2>Hey Anna</h2>
-            {history.slice(1).map((item) => (
-              <Text blockquote>{item.content}</Text>
-            ))}
+            {history
+              .slice(1)
+              .reverse()
+              .slice(0, 5)
+              .map((item) => (
+                <Text blockquote>{item.content}</Text>
+              ))}
           </Card.Body>
           <Card.Divider />
           <Card.Footer>
