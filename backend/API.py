@@ -2,9 +2,9 @@ import os
 from typing import List
 from pydantic import BaseModel
 from fastapi import FastAPI
-# from dotenv import load_dotenv
-# load_dotenv()
 import yaml
+from fastapi.middleware.cors import CORSMiddleware
+
 
 from services.utils.greetings import get_greetings
 # from services.utils.change_settings import display_settings, detect_request_type
@@ -21,6 +21,15 @@ class HistoryRequest(BaseModel):
 
 
 app = FastAPI()
+
+origins = ["*"]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/")
