@@ -10,9 +10,9 @@ def yaml_to_json(file_name):
         return configuration
 
 
-def load_json():
+def load_json(file_name):
     current_path = os.path.dirname(os.path.abspath(__file__))
-    with open(os.path.dirname(os.path.abspath("API.py")) + "/data/greetings.json") as user_file:
+    with open(os.path.dirname(os.path.abspath("API.py")) + file_name) as user_file:
         greetings = user_file.read()
     parsed_json = json.loads(greetings)
     return parsed_json
