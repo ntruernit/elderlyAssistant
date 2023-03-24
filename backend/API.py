@@ -4,6 +4,7 @@ from pydantic import BaseModel
 from fastapi import FastAPI
 import yaml
 from fastapi.middleware.cors import CORSMiddleware
+import json
 
 
 from services.utils.greetings import get_greetings
@@ -44,21 +45,29 @@ def get_answer(history: HistoryRequest):
     speech = str(history.dict()["history"][-1]["content"]).lower()
     print(speech)
     configs = yaml_to_json(os.path.dirname(os.path.abspath("API.py")) + "/data/config.yaml")
+    configs = load_json("/data/defaults.json")
     print(configs)
-    try:
-        if ("switch" in speech) or ("talk to" in speech):
-            characters = load_json(os.path.abspath("API.py") + "/data/options.json")
+    if ("switch" in speech) or ("talk to" in speech):
+        try:
+            characters = load_json("/data/options.json")
             for person, ids in characters.items():
                 if person in speech:
                     print(person)
-                    configs["DEFAULT_VOICE"] = ids["voice"]
-                    configs["DEFAULT_AVATAR"] = ids["avatar"]
-                    with open(os.path.dirname(os.path.abspath("API.py")) + "/data/config.yaml", "w") as f:
-                        yaml.dump(configs, f)
-                    answer = "Hallo, ich bin " + person
+                    configs["DEFAULT_VOICE"] = str(ids["voice"])
+                    configs["DEFAULT_AVATAR"] = str(ids["avatar"])
+                    # with open(os.path.dirname(os.path.abspath("API.py")) + "/data/config.yaml", "w") as f:
+                    #     yaml.dump(configs, f)
+                    with open(os.path.dirname(os.path.abspath("API.py")) + "/data/defaults.json", "w") as outfile:
+                        json.dump(configs, outfile)
+                    answer = str("Hallo, ich bin " + person)
                     video = STV.speech_to_video(script=answer)
+                    print(video)
                     return {"answer": answer, "video": video}
-    except Exception as e:
+        except Exception as e:
+            answer = OpenAi.ask_ai(history.dict())
+            video = STV.speech_to_video(script=answer)
+            return {"answer": answer, "video": video}
+    else:
         answer = OpenAi.ask_ai(history.dict())
         video = STV.speech_to_video(script=answer)
         return {"answer": answer, "video": video}
